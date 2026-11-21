@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#171B20">
+  <meta name="description" content="GameVault: organize sua biblioteca de jogos, acompanhe seu progresso e encontre ofertas.">
+  <title>Gêneros | GameVault</title>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+  
+</head>
+<body data-page="generos">
+  <button class="mobile-menu-btn" id="open-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰ <span>GameVault</span></button>
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
+      <a class="brand" href="index.html"><span class="brand-mark">🎮</span><span>Game<span class="brand-accent">Vault</span><small>MINHA BIBLIOTECA</small></span></a>
+      <div class="nav-heading">MINHA COLEÇÃO</div>
+      <nav class="nav-links"><a class="nav-item" href="index.html" ><span class="nav-icon">⌂</span><span>Início</span></a><a class="nav-item" href="biblioteca.html" ><span class="nav-icon">▦</span><span>Minha biblioteca</span></a><a class="nav-item" href="adicionar.html" ><span class="nav-icon">＋</span><span>Adicionar jogo</span></a><a class="nav-item" href="jogando.html" ><span class="nav-icon">▶</span><span>Jogando agora</span></a><a class="nav-item" href="zerados.html" ><span class="nav-icon">✓</span><span>Jogos zerados</span></a><a class="nav-item" href="backlog.html" ><span class="nav-icon">◷</span><span>Quero jogar</span></a><a class="nav-item" href="desejos.html" ><span class="nav-icon">♡</span><span>Lista de desejos</span></a><a class="nav-item" href="avaliacoes.html" ><span class="nav-icon">★</span><span>Minhas avaliações</span></a><a class="nav-item" href="favoritos.html" ><span class="nav-icon">♥</span><span>Favoritos</span></a><a class="nav-item active" href="generos.html" aria-current="page"><span class="nav-icon">◇</span><span>Gêneros</span></a><a class="nav-item" href="plataformas.html" ><span class="nav-icon">▣</span><span>Plataformas</span></a><a class="nav-item" href="estatisticas.html" ><span class="nav-icon">▥</span><span>Estatísticas</span></a></nav>
+      <div class="nav-heading">DESCOBRIR</div>
+      <nav class="nav-links"><a class="nav-item" href="promocoes.html" ><span class="nav-icon">%</span><span>Promoções</span></a><a class="nav-item" href="gratis.html" ><span class="nav-icon">🎁</span><span>Jogos gratuitos</span></a><a class="nav-item" href="brindes.html" ><span class="nav-icon">⚡</span><span>Ofertas grátis</span></a></nav>
+      
+    </aside>
+    <main class="main-content">
+      <header class="page-header"><div><p class="overline">GAMEVAULT / SUA COLEÇÃO</p><h1>Gêneros</h1><p class="page-subtitle">Descubra quais estilos estão presentes na sua coleção.</p></div><div class="header-avatar" title="Seu espaço gamer">GV</div></header>
+      
+<div class="section-heading"><h2>Explorar por gênero</h2></div><div class="chips" id="genre-chips"></div><p class="result-hint" id="genre-result" role="status"></p><div class="games-grid" id="genre-grid"></div>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="js/app.js" defer></script>
+</body>
+</html>
