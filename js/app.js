@@ -89,13 +89,13 @@
         return store(GAME_KEY, games);
     }
 
-    function updateGame(id, changes) {
+    function updateGame(id, changes, redraw = true) {
         const games = getGames();
         const game = games.find(item => item.id === id);
         if (!game) return;
         Object.assign(game, changes);
         if (saveGames(games)) {
-            refresh();
+            if (redraw) refresh();
             toast('Biblioteca atualizada.');
         }
     }
@@ -174,7 +174,7 @@
             const game = getGames().find(item => item.id === id);
             if (action === 'remove-wish') {
                 const wishes = readArray(WISH_KEY);
-                if (store(WISH_KEY, wishes.filter(item => item.id !== id))) {
+                if (store(WISH_KEY, wishes.filter(item => item?.id !== id))) {
                     refresh();
                     toast('Jogo removido da lista de desejos.');
                 }
@@ -307,7 +307,7 @@
         refresh = () => {
             const games = getGames().filter(game => game.status === 'jogando');
             putCount('playing-count', games.length);
-            byId('playing-list').innerHTML = games.length ? games.map(game => `<article class="list-row"><div class="list-icon">🎮</div><div class="list-main"><h3>${escapeHTML(game.name)}</h3><p>${escapeHTML(game.platform)} · ${escapeHTML(game.genre)}</p><div class="list-actions"><button type="button" class="btn btn-small btn-secondary" data-action="finish" data-id="${escapeHTML(game.id)}">Marcar como zerado</button><button type="button" class="btn btn-small btn-outline" data-action="pause" data-id="${escapeHTML(game.id)}">Pausar</button></div></div><div class="list-right"><label for="progress-${escapeHTML(game.id)}">Progresso: <output id="output-${escapeHTML(game.id)}">${game.progress}%</output></label><input class="progress-range" id="progress-${escapeHTML(game.id)}" type="range" min="0" max="100" step="5" value="${game.progress}" data-progress-id="${escapeHTML(game.id)}"></div></article>`).join('') : emptyState('Nenhum jogo marcado como Jogando.');
+            byId('playing-list').innerHTML = games.length ? games.map(game => `<article class="list-row"><div class="list-icon">🎮</div><div class="list-main"><h3>${escapeHTML(game.name)}</h3><p>${escapeHTML(game.platform)} · ${escapeHTML(game.genre)}</p><div class="list-actions"><button type="button" class="btn btn-small btn-secondary" data-action="finish" data-id="${escapeHTML(game.id)}">Marcar como zerado</button><button type="button" class="btn btn-small btn-outline" data-action="pause" data-id="${escapeHTML(game.id)}">Pausar</button></div></div><div class="list-right"><label for="progress-${escapeHTML(game.id)}">Progresso: <output id="output-${escapeHTML(game.id)}">${game.progress}%</output></label><input class="progress-range" id="progress-${escapeHTML(game.id)}" type="range" min="0" max="100" step="1" value="${game.progress}" data-progress-id="${escapeHTML(game.id)}"></div></article>`).join('') : emptyState('Nenhum jogo marcado como Jogando.');
         };
         const list = byId('playing-list');
         list.addEventListener('input', event => {
@@ -319,7 +319,7 @@
         list.addEventListener('change', event => {
             const range = event.target.closest('[data-progress-id]');
             if (!range) return;
-            updateGame(range.dataset.progressId, {progress: number(range.value)});
+            updateGame(range.dataset.progressId, {progress: number(range.value)}, false);
         });
         refresh();
     }
@@ -369,7 +369,7 @@
             if (!name) return;
             const existsInGames = getGames().some(game => game.wishlist && game.name.toLocaleLowerCase('pt-BR') === name.toLocaleLowerCase('pt-BR'));
             const wishes = readArray(WISH_KEY);
-            const existsInWishes = wishes.some(item => String(item.name).toLocaleLowerCase('pt-BR') === name.toLocaleLowerCase('pt-BR'));
+            const existsInWishes = wishes.some(item => String(item?.name || '').toLocaleLowerCase('pt-BR') === name.toLocaleLowerCase('pt-BR'));
             if (existsInGames || existsInWishes) {
                 byId('wish-message').textContent = 'Este jogo já está na sua lista.';
                 return;
@@ -516,6 +516,124 @@
         return `<article class="game-card api-card"><div class="cover">${image ? `<img src="${escapeHTML(image)}" alt="Capa de ${escapeHTML(title)}" loading="lazy">` : '<span class="cover-icon">🎮</span>'}<span class="status-pill">${escapeHTML(badge)}</span></div><div class="game-body"><h3>${escapeHTML(title)}</h3><p class="game-meta">${escapeHTML(subtitle)}</p>${price ? `<p class="api-price">${escapeHTML(price)}</p>` : ''}<div class="game-actions">${href ? `<a class="btn btn-small btn-primary" href="${escapeHTML(href)}" target="_blank" rel="noopener noreferrer">${escapeHTML(button)}</a>` : ''}</div></div></article>`;
     }
 
+    const steamSnapshot = {
+        "collectedAt": "2026-11-21T10:20:02.274259+00:00",
+        "specials": {
+            "items": [
+                {
+                    "id": 1426210,
+                    "type": 0,
+                    "name": "It Takes Two",
+                    "original_price": 19900,
+                    "final_price": 3980,
+                    "discount_percent": 80,
+                    "discount_expiration": 1796320800,
+                    "currency": "BRL",
+                    "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1426210/header_brazilian.jpg?t=1777395376"
+                },
+                {
+                    "id": 2215430,
+                    "type": 0,
+                    "name": "Ghost of Tsushima VERSÃO DO DIRETOR",
+                    "original_price": 24990,
+                    "final_price": 12495,
+                    "discount_percent": 50,
+                    "discount_expiration": 1796148000,
+                    "currency": "BRL",
+                    "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2215430/header.jpg?t=1763409398"
+                },
+                {
+                    "id": 1817070,
+                    "type": 0,
+                    "name": "Marvel’s Spider-Man Remastered",
+                    "original_price": 24990,
+                    "final_price": 9996,
+                    "discount_percent": 60,
+                    "discount_expiration": 1796148000,
+                    "currency": "BRL",
+                    "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1817070/header.jpg?t=1787838689"
+                },
+                {
+                    "id": 1593500,
+                    "type": 0,
+                    "name": "God of War",
+                    "original_price": 19990,
+                    "final_price": 7996,
+                    "discount_percent": 60,
+                    "discount_expiration": 1796148000,
+                    "currency": "BRL",
+                    "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1593500/header.jpg?t=1763059412"
+                },
+                {
+                    "id": 2909400,
+                    "type": 0,
+                    "name": "FINAL FANTASY VII REBIRTH",
+                    "original_price": 21990,
+                    "final_price": 3298,
+                    "discount_percent": 85,
+                    "discount_expiration": 1796234400,
+                    "currency": "BRL",
+                    "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2909400/64a1006a85342c7d3e4b1e1b8e562fee2dc86578/header.jpg?t=1793774936"
+                },
+                {
+                    "id": 2531310,
+                    "type": 0,
+                    "name": "The Last of Us™ Parte II Remastered",
+                    "original_price": 19990,
+                    "final_price": 13393,
+                    "discount_percent": 33,
+                    "discount_expiration": 1796148000,
+                    "currency": "BRL",
+                    "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2531310/header.jpg?t=1750959180"
+                },
+                {
+                    "id": 1259420,
+                    "type": 0,
+                    "name": "Days Gone",
+                    "original_price": 19950,
+                    "final_price": 6583,
+                    "discount_percent": 67,
+                    "discount_expiration": 1796148000,
+                    "currency": "BRL",
+                    "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1259420/header.jpg?t=1750947718"
+                },
+                {
+                    "id": 2322010,
+                    "type": 0,
+                    "name": "God of War Ragnarök",
+                    "original_price": 24990,
+                    "final_price": 16743,
+                    "discount_percent": 33,
+                    "discount_expiration": 1796148000,
+                    "currency": "BRL",
+                    "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2322010/header.jpg?t=1776465233"
+                },
+                {
+                    "id": 1462040,
+                    "type": 0,
+                    "name": "FINAL FANTASY VII REMAKE INTERGRADE",
+                    "original_price": 17490,
+                    "final_price": 3148,
+                    "discount_percent": 82,
+                    "discount_expiration": 1796234400,
+                    "currency": "BRL",
+                    "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1462040/67aebedbdfc261278fc5e3cd45b519212ac0555a/header.jpg?t=1789446715"
+                },
+                {
+                    "id": 2483190,
+                    "type": 0,
+                    "name": "Forza Horizon 6",
+                    "original_price": 29900,
+                    "final_price": 22425,
+                    "discount_percent": 25,
+                    "discount_expiration": 1796320800,
+                    "currency": "BRL",
+                    "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2483190/c53fe3362cc3267a5d34aca3e796b90963e0e23f/header_alt_assets_6.jpg?t=1795104806"
+                }
+            ]
+        }
+    };
+
     function setupDeals() {
         let deals = [];
         const button = byId('load-deals');
@@ -532,7 +650,7 @@
                 subtitle: `Desconto: ${item.discount}% · De ${money(item.original)}`,
                 picture: item.image,
                 badge: `${item.discount}% OFF`,
-                link: `https://store.steampowered.com/app/${item.id}/?cc=br`,
+                link: `https://store.steampowered.com/${item.type === 1 ? 'sub' : 'app'}/${item.id}/?cc=br`,
                 button: 'Ver na Steam',
                 price: money(item.final)
             })).join('') : emptyState('Não há ofertas que correspondam a esses filtros.', false);
@@ -542,23 +660,36 @@
             status.textContent = 'Carregando promoções...';
             try {
                 const steamURL = 'https://store.steampowered.com/api/featuredcategories/?cc=br&l=brazilian';
-                const data = await fetchJSON(`https://proxy.cors.dev/${steamURL}`);
-                if (!data || !data.specials || !Array.isArray(data.specials.items)) throw new Error('Resposta inesperada');
+                let data;
+                try {
+                    data = await fetchJSON(`https://proxy.cors.dev/${steamURL}`);
+                    if (!Array.isArray(data?.specials?.items)) throw new Error('Resposta inesperada');
+                } catch {
+                    data = steamSnapshot;
+                }
+                const now = Date.now() / 1000;
                 deals = data.specials.items.filter(item => {
                     const id = Number(item.id);
                     const original = Number(item.original_price);
                     const final = Number(item.final_price);
                     const pct = Number(item.discount_percent);
-                    return Number.isInteger(id) && id > 0 && Number.isFinite(original) && Number.isFinite(final) && original > final && final >= 0 && Number.isFinite(pct) && pct > 0 && (!item.currency || item.currency === 'BRL');
+                    return Number.isInteger(id) && id > 0 && Number.isFinite(original) && Number.isFinite(final) && original > final && final >= 0 && Number.isFinite(pct) && pct > 0 && item.currency === 'BRL' &&
+                        (item.type === 0 || item.type === 1) &&
+                        (!item.discount_expiration || item.discount_expiration > now);
                 }).map(item => ({
                     id: Number(item.id),
+                    type: item.type,
                     name: String(item.name || 'Jogo sem título'),
                     original: Number(item.original_price),
                     final: Number(item.final_price),
                     discount: Math.round(Number(item.discount_percent)),
                     image: item.header_image || ''
                 })).sort((a, b) => b.discount - a.discount);
-                status.textContent = deals.length ? '' : 'Nenhuma promoção disponível no momento.';
+                if (data.collectedAt && !deals.length) throw new Error('Ofertas expiradas');
+                const collected = data.collectedAt && new Date(data.collectedAt);
+                status.textContent = collected
+                    ? `Preços consultados em ${collected.toLocaleDateString('pt-BR', {timeZone: 'America/Sao_Paulo'})}. Confira o valor atual na Steam.`
+                    : deals.length ? '' : 'Nenhuma promoção disponível no momento.';
                 draw();
             } catch {
                 deals = [];
@@ -681,3 +812,4 @@
     };
     if (pages[page]) pages[page]();
 })();
+
